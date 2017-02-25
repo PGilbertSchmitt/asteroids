@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -97,6 +97,7 @@ Vector.prototype.dist = function (other) {
   return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 };
 
+window.Vector = Vector;
 module.exports = Vector;
 
 
@@ -110,7 +111,7 @@ function MovingObject (options = {}) {
   this.pos = options.pos || new Vector(0, 0);
   this.vel = options.vel || new Vector(0, 0);
   this.rad = options.rad || 10;
-  this.col = options.col || "#FFFFFF";
+  this.col = options.col || "#EEEEEE";
 }
 
 MovingObject.prototype.x = function () {
@@ -136,6 +137,12 @@ MovingObject.prototype.draw = function (ctx) {
   ctx.fill();
 };
 
+MovingObject.prototype.move = function () {
+  this.pos = this.pos.plus(this.vel);
+};
+
+module.exports = MovingObject;
+
 // DONT CALL IN NODE
 // let ctx = document.getElementById('canvas').getContext('2d');
 // let thing = new MovingObject({
@@ -143,6 +150,38 @@ MovingObject.prototype.draw = function (ctx) {
 //   col: "green"
 // });
 // thing.draw(ctx);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+const Util = {
+  inherit (Child, Parent) {
+    Child.prototype = Object.create(Parent.prototype);
+    Child.prototype.constructor = Child;
+  }
+};
+
+module.exports = Util;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+let MovingObject = __webpack_require__(1);
+let Vector = __webpack_require__(0);
+let Util = __webpack_require__(2);
+
+function Asteroid (options = {}) {
+  options.rad = options.rad || (Math.random() * 10) + 25;
+  options.col = options.col || "#FF0000";
+  MovingObject.call(this, options);
+}
+
+Util.inherit(Asteroid, MovingObject);
+window.Asteroid = Asteroid;
 
 
 /***/ })
