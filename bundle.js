@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,6 +74,17 @@ function Vector(x, y) {
   this.x = x;
   this.y = y;
 }
+
+// Statics
+
+Vector.rand = function (mag = 1) {
+  let rad = 2 * Math.PI * Math.random();
+  let x = Math.sin(rad);
+  let y = Math.cos(rad);
+  return new Vector(x * mag, y * mag);
+};
+
+// Prototypes
 
 Vector.prototype.plus = function (other) {
   let v = new Vector(
@@ -94,10 +105,18 @@ Vector.prototype.minus = function (other) {
 Vector.prototype.dist = function (other) {
   let dx = this.x - other.x;
   let dy = this.y - other.y;
-  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+  let dVec = new Vector(dx, dy);
+  return dVec.mag();
 };
 
-window.Vector = Vector;
+Vector.prototype.scale = function (m) {
+  return new Vector(this.x * m, this.y * m);
+};
+
+Vector.prototype.mag = function () {
+  return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2)); 
+};
+
 module.exports = Vector;
 
 
@@ -167,21 +186,32 @@ module.exports = Util;
 
 
 /***/ }),
-/* 3 */
+/* 3 */,
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 let MovingObject = __webpack_require__(1);
 let Vector = __webpack_require__(0);
 let Util = __webpack_require__(2);
 
+const DEFAULTS = {
+  col: "#FF0000",
+  rad () {
+    return (Math.random() * 10) + 25;
+  },
+  speed: 5
+};
+
 function Asteroid (options = {}) {
-  options.rad = options.rad || (Math.random() * 10) + 25;
-  options.col = options.col || "#FF0000";
+  options.pos = options.pos || new Vector(0, 0);
+  options.vel = options.vel || Vector.rand(DEFAULTS.speed);
+  options.rad = DEFAULTS.rad();
+  options.col = DEFAULTS.col;
+  
   MovingObject.call(this, options);
 }
 
 Util.inherit(Asteroid, MovingObject);
-window.Asteroid = Asteroid;
 
 
 /***/ })
